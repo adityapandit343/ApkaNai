@@ -1,7 +1,20 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\adity\\Documents\\Downloads\\CutBook_Backend\\CutBook.API\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{756CDB39-287E-4C7A-9816-CFAAAEF94711}|CutBook.API.csproj|c:\\users\\adity\\documents\\downloads\\cutbook_backend\\cutbook.api\\cutbook.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{756CDB39-287E-4C7A-9816-CFAAAEF94711}|CutBook.API.csproj|solutionrelative:cutbook.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{756CDB39-287E-4C7A-9816-CFAAAEF94711}|CutBook.API.csproj|c:\\users\\adity\\documents\\downloads\\cutbook_backend\\cutbook.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{756CDB39-287E-4C7A-9816-CFAAAEF94711}|CutBook.API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{756CDB39-287E-4C7A-9816-CFAAAEF94711}|CutBook.API.csproj|c:\\users\\adity\\documents\\downloads\\cutbook_backend\\cutbook.api\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{756CDB39-287E-4C7A-9816-CFAAAEF94711}|CutBook.API.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,6 +47,45 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CutBook.API",
+              "DocumentMoniker": "C:\\Users\\adity\\Documents\\Downloads\\CutBook_Backend\\CutBook.API\\CutBook.API.csproj",
+              "RelativeDocumentMoniker": "CutBook.API.csproj",
+              "ToolTip": "C:\\Users\\adity\\Documents\\Downloads\\CutBook_Backend\\CutBook.API\\CutBook.API.csproj",
+              "RelativeToolTip": "CutBook.API.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-12T16:18:30.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\adity\\Documents\\Downloads\\CutBook_Backend\\CutBook.API\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\adity\\Documents\\Downloads\\CutBook_Backend\\CutBook.API\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T16:15:32.826Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\adity\\Documents\\Downloads\\CutBook_Backend\\CutBook.API\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\adity\\Documents\\Downloads\\CutBook_Backend\\CutBook.API\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Data\\AppDbContext.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAnwDYAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T16:14:49.988Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CutBook.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+954b363c650e588924002f04496e99f923716910")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6900e87d20d99bbc69ffed25d48c0f2db6b86b2a")]
 [assembly: System.Reflection.AssemblyProductAttribute("CutBook.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CutBook.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

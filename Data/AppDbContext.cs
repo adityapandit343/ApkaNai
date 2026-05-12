@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+
 using CutBook.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CutBook.API.Data;
 
@@ -15,44 +16,42 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // User → Shops (one to many)
+        base.OnModelCreating(modelBuilder);
+
+        // Shop -> Owner (User) Relationship
         modelBuilder.Entity<Shop>()
             .HasOne(s => s.Owner)
-            .WithMany(u => u.Shops)
+            .WithMany() // User can have many shops
             .HasForeignKey(s => s.OwnerId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Shop → QueueEntries
+        // Shop -> Plan Relationship
+        modelBuilder.Entity<Shop>()
+            .HasOne(s => s.Plan)
+            .WithMany(p => p.Shops)
+            .HasForeignKey(s => s.PlanId);
+
+        // QueueEntry -> Shop Relationship
         modelBuilder.Entity<QueueEntry>()
             .HasOne(q => q.Shop)
             .WithMany(s => s.QueueEntries)
             .HasForeignKey(q => q.ShopId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Shop → Subscription
+        // Subscription Relationships
         modelBuilder.Entity<Subscription>()
-            .HasOne(s => s.Shop)
-            .WithMany(sh => sh.Subscriptions)
-            .HasForeignKey(s => s.ShopId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasOne(sub => sub.Shop)
+            .WithMany(s => s.Subscriptions)
+            .HasForeignKey(sub => sub.ShopId);
 
-        // Plan → Subscription
         modelBuilder.Entity<Subscription>()
-            .HasOne(s => s.Plan)
+            .HasOne(sub => sub.Plan)
             .WithMany(p => p.Subscriptions)
-            .HasForeignKey(s => s.PlanId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(sub => sub.PlanId);
 
-        // Decimal precision
+        // Decimal precision for Price in Plan
         modelBuilder.Entity<Plan>()
             .Property(p => p.Price)
-            .HasPrecision(10, 2);
-
-        // Seed default plans
-        modelBuilder.Entity<Plan>().HasData(
-            new Plan { Id = 1, Name = "Free",    Price = 0,   MaxBookingsPerMonth = 20,  WhatsAppAlerts = false, Analytics = false, MultipleStaff = false },
-            new Plan { Id = 2, Name = "Pro",     Price = 299, MaxBookingsPerMonth = -1,  WhatsAppAlerts = true,  Analytics = false, MultipleStaff = false },
-            new Plan { Id = 3, Name = "Premium", Price = 599, MaxBookingsPerMonth = -1,  WhatsAppAlerts = true,  Analytics = true,  MultipleStaff = true  }
-        );
+            .HasColumnType("decimal(18,2)");
     }
 }
