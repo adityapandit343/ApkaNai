@@ -12,14 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CutBookApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260516074420_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260516094552_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -73,7 +74,7 @@ namespace CutBookApi.Migrations
 
                     b.HasIndex("ShopId");
 
-                    b.ToTable("HaircutRequests");
+                    b.ToTable("HaircutRequests", "public");
                 });
 
             modelBuilder.Entity("CutBookApi.Models.QueueEntry", b =>
@@ -121,7 +122,7 @@ namespace CutBookApi.Migrations
 
                     b.HasIndex("ShopId");
 
-                    b.ToTable("QueueEntries");
+                    b.ToTable("QueueEntries", "public");
                 });
 
             modelBuilder.Entity("CutBookApi.Models.Shop", b =>
@@ -170,9 +171,7 @@ namespace CutBookApi.Migrations
 
                     b.Property<string>("SalonType")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Unisex");
+                        .HasColumnType("text");
 
                     b.Property<string>("ShopName")
                         .IsRequired()
@@ -186,7 +185,7 @@ namespace CutBookApi.Migrations
                     b.HasIndex("OwnerId")
                         .IsUnique();
 
-                    b.ToTable("Shops");
+                    b.ToTable("Shops", "public");
                 });
 
             modelBuilder.Entity("CutBookApi.Models.ShopService", b =>
@@ -221,7 +220,7 @@ namespace CutBookApi.Migrations
 
                     b.HasIndex("ShopId");
 
-                    b.ToTable("ShopServices");
+                    b.ToTable("ShopServices", "public");
                 });
 
             modelBuilder.Entity("CutBookApi.Models.User", b =>
@@ -256,16 +255,11 @@ namespace CutBookApi.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Customer");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Users");
+                    b.ToTable("Users", "public");
                 });
 
             modelBuilder.Entity("CutBookApi.Models.HaircutRequest", b =>
@@ -273,7 +267,7 @@ namespace CutBookApi.Migrations
                     b.HasOne("CutBookApi.Models.User", "Customer")
                         .WithMany("HaircutRequests")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CutBookApi.Models.Shop", "Shop")
@@ -292,13 +286,13 @@ namespace CutBookApi.Migrations
                     b.HasOne("CutBookApi.Models.User", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CutBookApi.Models.HaircutRequest", "HaircutRequest")
                         .WithOne("QueueEntry")
                         .HasForeignKey("CutBookApi.Models.QueueEntry", "HaircutRequestId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CutBookApi.Models.Shop", "Shop")
