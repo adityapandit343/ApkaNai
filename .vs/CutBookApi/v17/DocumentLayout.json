@@ -1,0 +1,157 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\meratool\\CutBookApi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\migrations\\20260516074420_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:migrations\\20260516074420_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\models\\shopservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:models\\shopservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\models\\shop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:models\\shop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\models\\queueentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:models\\queueentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\models\\haircutrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:models\\haircutrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 11,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1448495824:0:{83107a3e-496a-485e-b455-16ddb978e55e}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "20260516074420_InitialCreate.cs",
+              "DocumentMoniker": "D:\\meratool\\CutBookApi\\Migrations\\20260516074420_InitialCreate.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260516074420_InitialCreate.cs",
+              "ToolTip": "D:\\meratool\\CutBookApi\\Migrations\\20260516074420_InitialCreate.cs",
+              "RelativeToolTip": "Migrations\\20260516074420_InitialCreate.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T07:44:29.467Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ShopService.cs",
+              "DocumentMoniker": "D:\\meratool\\CutBookApi\\Models\\ShopService.cs",
+              "RelativeDocumentMoniker": "Models\\ShopService.cs",
+              "ToolTip": "D:\\meratool\\CutBookApi\\Models\\ShopService.cs",
+              "RelativeToolTip": "Models\\ShopService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T07:41:18.359Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Shop.cs",
+              "DocumentMoniker": "D:\\meratool\\CutBookApi\\Models\\Shop.cs",
+              "RelativeDocumentMoniker": "Models\\Shop.cs",
+              "ToolTip": "D:\\meratool\\CutBookApi\\Models\\Shop.cs",
+              "RelativeToolTip": "Models\\Shop.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T07:41:17.797Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "HaircutRequest.cs",
+              "DocumentMoniker": "D:\\meratool\\CutBookApi\\Models\\HaircutRequest.cs",
+              "RelativeDocumentMoniker": "Models\\HaircutRequest.cs",
+              "ToolTip": "D:\\meratool\\CutBookApi\\Models\\HaircutRequest.cs",
+              "RelativeToolTip": "Models\\HaircutRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T07:41:09.426Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "QueueEntry.cs",
+              "DocumentMoniker": "D:\\meratool\\CutBookApi\\Models\\QueueEntry.cs",
+              "RelativeDocumentMoniker": "Models\\QueueEntry.cs",
+              "ToolTip": "D:\\meratool\\CutBookApi\\Models\\QueueEntry.cs",
+              "RelativeToolTip": "Models\\QueueEntry.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T07:41:06.377Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\meratool\\CutBookApi\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Models\\User.cs",
+              "ToolTip": "D:\\meratool\\CutBookApi\\Models\\User.cs",
+              "RelativeToolTip": "Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T07:40:54.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\meratool\\CutBookApi\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\meratool\\CutBookApi\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-16T07:37:28.728Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

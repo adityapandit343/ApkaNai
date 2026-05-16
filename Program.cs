@@ -1,115 +1,93 @@
-using CutBook.API.Data;
-using CutBook.API.Hubs;
-using CutBook.API.Services;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
+using CutBookApi.Data;
+using CutBookApi.Helpers;
+using CutBookApi.Hubs;
+using CutBookApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ─────────────────────────────────────────────────────────────
-// DATABASE
-// ─────────────────────────────────────────────────────────────
+// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ─────────────────────────────────────────────────────────────
-// CORS
-// ─────────────────────────────────────────────────────────────
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod());
-});
-
-// ─────────────────────────────────────────────────────────────
-// JWT AUTHENTICATION
-// ─────────────────────────────────────────────────────────────
+// JWT Auth
+var jwtKey = builder.Configuration["Jwt:Key"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddJwtBearer(opt =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        opt.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    builder.Configuration["Jwt:Key"]!
-                ))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
-
-        // SignalR JWT support
-        options.Events = new JwtBearerEvents
+        opt.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                var token = context.Request.Query["access_token"];
+                var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
-
-                if (!string.IsNullOrEmpty(token)
-                    && path.StartsWithSegments("/hubs"))
-                {
-                    context.Token = token;
-                }
-
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    context.Token = accessToken;
                 return Task.CompletedTask;
             }
         };
     });
 
-// ─────────────────────────────────────────────────────────────
-// SERVICES
-// ─────────────────────────────────────────────────────────────
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<QueueService>();
+builder.Services.AddAuthorization();
 
+// Services
+builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IShopService, ShopService>();
+builder.Services.AddScoped<IQueueService, QueueService>();
+
+// SignalR
 builder.Services.AddSignalR();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 
-// ─────────────────────────────────────────────────────────────
-// SWAGGER
-// ─────────────────────────────────────────────────────────────
-builder.Services.AddSwaggerGen(options =>
+// Controllers
+builder.Services.AddControllers();
+
+// CORS
+builder.Services.AddCors(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    options.AddPolicy("AllowAll", policy =>
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "CutBook API",
-        Version = "v1"
+        Version = "v1",
+        Description = "Real-time Salon Queue and Booking System"
     });
-
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
+        Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter JWT token like: Bearer {token}"
+        Description = "Enter: Bearer {your token}"
     });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
             },
             Array.Empty<string>()
         }
@@ -118,67 +96,25 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// ─────────────────────────────────────────────────────────────
-// GLOBAL ERROR HANDLER
-// ─────────────────────────────────────────────────────────────
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "text/plain";
-
-        var error = context.Features
-            .Get<IExceptionHandlerFeature>();
-
-        if (error != null)
-        {
-            await context.Response.WriteAsync(
-                error.Error.ToString()
-            );
-        }
-    });
-});
-
-// ─────────────────────────────────────────────────────────────
-// AUTO APPLY MIGRATIONS
-// ─────────────────────────────────────────────────────────────
+// Auto Migrate
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider
-        .GetRequiredService<AppDbContext>();
-
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
-// ─────────────────────────────────────────────────────────────
-// MIDDLEWARE
-// ─────────────────────────────────────────────────────────────
-app.UseCors("AllowAll");
-
-// Swagger
 app.UseSwagger();
-
-app.UseSwaggerUI(options =>
+app.UseSwaggerUI(c =>
 {
-    options.SwaggerEndpoint(
-        "/swagger/v1/swagger.json",
-        "CutBook API v1");
-
-    options.RoutePrefix = string.Empty;
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CutBook API v1");
+    c.RoutePrefix = string.Empty;
 });
 
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ─────────────────────────────────────────────────────────────
-// ENDPOINTS
-// ─────────────────────────────────────────────────────────────
 app.MapControllers();
+app.MapHub<ShopHub>("/hubs/shop");
 
-app.MapHub<QueueHub>("/hubs/queue");
-
-// ─────────────────────────────────────────────────────────────
-// RUN APP
-// ─────────────────────────────────────────────────────────────
 app.Run();

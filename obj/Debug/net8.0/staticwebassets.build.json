@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "M8fHSXBIfmSPcmdPcrBRHld5jbgrYu1J9TaNwr7mKuk=",
-  "Source": "CutBook.API",
-  "BasePath": "_content/CutBook.API",
+  "Hash": "QNlyOqcNyjJ6TDzV7jGFN26Mc3LQn7DXRTXincfdqQY=",
+  "Source": "CutBookApi",
+  "BasePath": "_content/CutBookApi",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

@@ -1,26 +1,20 @@
-namespace CutBook.API.Models;
+namespace CutBookApi.Models;
 
 public class QueueEntry
 {
     public int Id { get; set; }
-    public int TokenNumber { get; set; }
-    public string CustomerName { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
-    public QueueStatus Status { get; set; } = QueueStatus.Waiting;
-    public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? CalledAt { get; set; }
-    public DateTime? ServedAt { get; set; }
-
-
     public int ShopId { get; set; }
-    public Shop Shop { get; set; } = null!;
-}
+    public int HaircutRequestId { get; set; }
+    public int CustomerId { get; set; }
+    public int Position { get; set; }
+    public int TokenNumber { get; set; }
+    public string Status { get; set; } = "Waiting"; // Waiting | InProgress | Done
+    public DateTime EnteredAt { get; set; } = DateTime.UtcNow;
+    public DateTime? StartedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
 
-public enum QueueStatus
-{
-    Waiting,
-    Called,
-    Serving,
-    Done,
-    NoShow
+    // Navigation
+    public Shop Shop { get; set; } = null!;
+    public HaircutRequest HaircutRequest { get; set; } = null!;
+    public User Customer { get; set; } = null!;
 }

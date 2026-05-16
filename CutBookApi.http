@@ -1,0 +1,6 @@
+@CutBookApi_HostAddress = http://localhost:5012
+
+GET {{CutBookApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

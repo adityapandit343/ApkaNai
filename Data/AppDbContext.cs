@@ -1,8 +1,7 @@
-
-using CutBook.API.Models;
 using Microsoft.EntityFrameworkCore;
+using CutBookApi.Models;
 
-namespace CutBook.API.Data;
+namespace CutBookApi.Data;
 
 public class AppDbContext : DbContext
 {
@@ -10,48 +9,72 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Shop> Shops => Set<Shop>();
+    public DbSet<ShopService> ShopServices => Set<ShopService>();
+    public DbSet<HaircutRequest> HaircutRequests => Set<HaircutRequest>();
     public DbSet<QueueEntry> QueueEntries => Set<QueueEntry>();
-    public DbSet<Plan> Plans => Set<Plan>();
-    public DbSet<Subscription> Subscriptions => Set<Subscription>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Shop -> Owner (User) Relationship
-        modelBuilder.Entity<Shop>()
-            .HasOne(s => s.Owner)
-            .WithMany() // User can have many shops
-            .HasForeignKey(s => s.OwnerId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // User
+        modelBuilder.Entity<User>(e =>
+        {
+            e.HasIndex(u => u.Email).IsUnique();
+            e.Property(u => u.Role).HasDefaultValue("Customer");
+        });
 
-        // Shop -> Plan Relationship
-        modelBuilder.Entity<Shop>()
-            .HasOne(s => s.Plan)
-            .WithMany(p => p.Shops)
-            .HasForeignKey(s => s.PlanId);
+        // Shop
+        modelBuilder.Entity<Shop>(e =>
+        {
+            e.HasOne(s => s.Owner)
+             .WithOne(u => u.Shop)
+             .HasForeignKey<Shop>(s => s.OwnerId)
+             .OnDelete(DeleteBehavior.Cascade);
 
-        // QueueEntry -> Shop Relationship
-        modelBuilder.Entity<QueueEntry>()
-            .HasOne(q => q.Shop)
-            .WithMany(s => s.QueueEntries)
-            .HasForeignKey(q => q.ShopId)
-            .OnDelete(DeleteBehavior.Cascade);
+            e.Property(s => s.SalonType).HasDefaultValue("Unisex");
+        });
 
-        // Subscription Relationships
-        modelBuilder.Entity<Subscription>()
-            .HasOne(sub => sub.Shop)
-            .WithMany(s => s.Subscriptions)
-            .HasForeignKey(sub => sub.ShopId);
+        // ShopService
+        modelBuilder.Entity<ShopService>(e =>
+        {
+            e.HasOne(ss => ss.Shop)
+             .WithMany(s => s.Services)
+             .HasForeignKey(ss => ss.ShopId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
 
-        modelBuilder.Entity<Subscription>()
-            .HasOne(sub => sub.Plan)
-            .WithMany(p => p.Subscriptions)
-            .HasForeignKey(sub => sub.PlanId);
+        // HaircutRequest
+        modelBuilder.Entity<HaircutRequest>(e =>
+        {
+            e.HasOne(r => r.Customer)
+             .WithMany(u => u.HaircutRequests)
+             .HasForeignKey(r => r.CustomerId)
+             .OnDelete(DeleteBehavior.Restrict);
 
-        // Decimal precision for Price in Plan
-        modelBuilder.Entity<Plan>()
-            .Property(p => p.Price)
-            .HasColumnType("decimal(18,2)");
+            e.HasOne(r => r.Shop)
+             .WithMany(s => s.HaircutRequests)
+             .HasForeignKey(r => r.ShopId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // QueueEntry
+        modelBuilder.Entity<QueueEntry>(e =>
+        {
+            e.HasOne(q => q.Shop)
+             .WithMany(s => s.Queue)
+             .HasForeignKey(q => q.ShopId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(q => q.HaircutRequest)
+             .WithOne(r => r.QueueEntry)
+             .HasForeignKey<QueueEntry>(q => q.HaircutRequestId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(q => q.Customer)
+             .WithMany()
+             .HasForeignKey(q => q.CustomerId)
+             .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }

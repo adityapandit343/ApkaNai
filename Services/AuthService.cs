@@ -1,82 +1,89 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using CutBook.API.Data;
-using CutBook.API.DTOs;
-using CutBook.API.Models;
+using CutBookApi.Data;
+using CutBookApi.DTOs;
+using CutBookApi.Helpers;
+using CutBookApi.Models;
 
-namespace CutBook.API.Services;
+namespace CutBookApi.Services;
 
-public class AuthService
+public interface IAuthService
+{
+    Task<AuthResponseDto> RegisterCustomerAsync(CustomerRegisterDto dto);
+    Task<AuthResponseDto> RegisterShopOwnerAsync(ShopOwnerRegisterDto dto);
+    Task<AuthResponseDto> LoginAsync(LoginDto dto);
+}
+
+public class AuthService : IAuthService
 {
     private readonly AppDbContext _db;
-    private readonly IConfiguration _config;
+    private readonly JwtHelper _jwt;
 
-    public AuthService(AppDbContext db, IConfiguration config)
+    public AuthService(AppDbContext db, JwtHelper jwt)
     {
         _db = db;
-        _config = config;
+        _jwt = jwt;
     }
 
-    public async Task<AuthResponseDto?> RegisterAsync(RegisterDto dto)
+    public async Task<AuthResponseDto> RegisterCustomerAsync(CustomerRegisterDto dto)
     {
-        // Email already registered?
         if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
-            return null;
+            throw new InvalidOperationException("Email already registered.");
 
         var user = new User
         {
-            Name        = dto.Name,
-            Email       = dto.Email,
-            PhoneNumber = dto.PhoneNumber,
+            FullName = dto.FullName,
+            Email = dto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            Role        = UserRole.Owner
+            PhoneNumber = dto.PhoneNumber,
+            Role = "Customer"
         };
 
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
-        return GenerateToken(user);
+        return BuildResponse(user);
     }
 
-    public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
+    public async Task<AuthResponseDto> RegisterShopOwnerAsync(ShopOwnerRegisterDto dto)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-        if (user == null) return null;
-        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash)) return null;
+        if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
+            throw new InvalidOperationException("Email already registered.");
 
-        return GenerateToken(user);
-    }
-
-    private AuthResponseDto GenerateToken(User user)
-    {
-        var key    = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-        var creds  = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var claims = new[]
+        var user = new User
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim(ClaimTypes.Name, user.Name)
+            FullName = dto.FullName,
+            Email = dto.Email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+            PhoneNumber = dto.PhoneNumber,
+            Role = "ShopOwner"
         };
 
-        var token = new JwtSecurityToken(
-            issuer:   _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims:   claims,
-            expires:  DateTime.UtcNow.AddDays(7),
-            signingCredentials: creds
-        );
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
 
-        return new AuthResponseDto
-        {
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
-            Name  = user.Name,
-            Email = user.Email,
-            Role  = user.Role.ToString()
-        };
+        return BuildResponse(user);
     }
+
+    public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email)
+            ?? throw new UnauthorizedAccessException("Invalid email or password.");
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            throw new UnauthorizedAccessException("Invalid email or password.");
+
+        if (!user.IsActive)
+            throw new UnauthorizedAccessException("Account is disabled.");
+
+        return BuildResponse(user);
+    }
+
+    private AuthResponseDto BuildResponse(User user) => new()
+    {
+        Token = _jwt.GenerateToken(user),
+        Role = user.Role,
+        UserId = user.Id,
+        FullName = user.FullName,
+        Email = user.Email
+    };
 }

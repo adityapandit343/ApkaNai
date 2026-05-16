@@ -1,172 +1,151 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CutBook.API.Data;
-using CutBook.API.DTOs;
-using CutBook.API.Models;
+using System.Security.Claims;
+using CutBookApi.DTOs;
+using CutBookApi.Services;
 
-namespace CutBook.API.Controllers;
+namespace CutBookApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
 public class ShopController : ControllerBase
 {
-    private readonly AppDbContext _db;
+    private readonly IShopService _shopService;
 
-    public ShopController(AppDbContext db)
+    public ShopController(IShopService shopService)
     {
-        _db = db;
+        _shopService = shopService;
     }
 
-    // GET api/shop — apni shops dekho
-    [HttpGet]
-    public async Task<IActionResult> GetMyShops()
-    {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var shops = await _db.Shops
-            .Include(s => s.Plan)
-            .Include(s => s.QueueEntries)
-            .Where(s => s.OwnerId == userId)
-            .Select(s => new ShopResponseDto
-            {
-                Id           = s.Id,
-                Name         = s.Name,
-                Address      = s.Address,
-                PhoneNumber  = s.PhoneNumber,
-                IsActive     = s.IsActive,
-                PlanName     = s.Plan != null ? s.Plan.Name : "Free",
-                TotalWaiting = s.QueueEntries.Count(q => q.Status == QueueStatus.Waiting)
-            })
-            .ToListAsync();
+    // ---- Shop Owner Endpoints ----
 
-        return Ok(shops);
-    }
-
-    // POST api/shop — nayi shop banao
+    /// <summary>Create shop (ShopOwner only). Gets 1 month free trial automatically.</summary>
     [HttpPost]
+    [Authorize(Roles = "ShopOwner")]
     public async Task<IActionResult> CreateShop([FromBody] CreateShopDto dto)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var shop = new Shop
+        try
         {
-            Name = dto.Name,
-            Address = dto.Address,
-            PhoneNumber = dto.PhoneNumber,
-            Latitude = dto.Latitude,
-            Longitude = dto.Longitude,
-            AvgServiceTime = dto.AvgServiceTime <= 0 ? 15 : dto.AvgServiceTime,
-            OwnerId = userId
-        };
-
-
-        _db.Shops.Add(shop);
-        await _db.SaveChangesAsync();
-
-        return Ok(new ShopResponseDto
+            var result = await _shopService.CreateShopAsync(GetUserId(), dto);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
         {
-            Id          = shop.Id,
-            Name        = shop.Name,
-            Address     = shop.Address,
-            PhoneNumber = shop.PhoneNumber,
-            IsActive    = shop.IsActive,
-            PlanName    = "Free"
-        });
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
-    // PUT api/shop/1/toggle — shop band/chalu karo
-    [HttpPut("{id}/toggle")]
-    public async Task<IActionResult> ToggleShop(int id)
+    /// <summary>Update shop details</summary>
+    [HttpPut]
+    [Authorize(Roles = "ShopOwner")]
+    public async Task<IActionResult> UpdateShop([FromBody] UpdateShopDto dto)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var shop   = await _db.Shops.FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == userId);
-
-        if (shop == null) return NotFound();
-
-        shop.IsActive = !shop.IsActive;
-        await _db.SaveChangesAsync();
-
-        return Ok(new { isActive = shop.IsActive });
-    }
-
-    // DELETE api/shop/1
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteShop(int id)
-    {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var shop   = await _db.Shops.FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == userId);
-
-        if (shop == null) return NotFound();
-
-        _db.Shops.Remove(shop);
-        await _db.SaveChangesAsync();
-
-        return Ok(new { message = "Shop delete ho gayi" });
-    }
-    [AllowAnonymous]
-    [HttpGet("nearby")]
-    public async Task<IActionResult> GetNearby(
-    [FromQuery] double lat,
-    [FromQuery] double lng,
-    [FromQuery] double radiusKm = 10)
-    {
-        var today = DateTime.UtcNow.Date;
-
-        var shops = await _db.Shops
-            .Include(s => s.QueueEntries)
-            .Where(s => s.Latitude != null && s.Longitude != null)
-            .Select(s => new
-            {
-                s.Id,
-                s.Name,
-                s.Address,
-                phone = s.PhoneNumber,
-                latitude = s.Latitude,
-                longitude = s.Longitude,
-                isOpen = s.IsActive,
-                avgServiceTime = s.AvgServiceTime,
-                distanceKm =
-                    6371 * Math.Acos(
-                        Math.Cos(lat * Math.PI / 180) *
-                        Math.Cos((double)s.Latitude! * Math.PI / 180) *
-                        Math.Cos(((double)s.Longitude! - lng) * Math.PI / 180) +
-                        Math.Sin(lat * Math.PI / 180) *
-                        Math.Sin((double)s.Latitude! * Math.PI / 180)
-                    ),
-                waitingCount = s.QueueEntries.Count(q =>
-                    q.Status == QueueStatus.Waiting &&
-                    q.JoinedAt.Date == today),
-                servingToken = s.QueueEntries
-                    .Where(q => q.Status == QueueStatus.Serving && q.JoinedAt.Date == today)
-                    .Select(q => (int?)q.TokenNumber)
-                    .FirstOrDefault()
-            })
-            .Where(s => s.distanceKm <= radiusKm)
-            .OrderBy(s => s.distanceKm)
-            .Take(50)
-            .ToListAsync();
-
-        return Ok(shops.Select(s => new
+        try
         {
-            s.Id,
-            s.Name,
-            s.Address,
-            s.phone,
-            s.latitude,
-            s.longitude,
-            distanceKm = Math.Round(s.distanceKm, 2),
-            s.isOpen,
-            queueSummary = new
-            {
-                s.servingToken,
-                s.waitingCount,
-                estimatedWait = s.waitingCount * s.avgServiceTime,
-                avgServiceTime = s.avgServiceTime
-            }
-        }));
+            var result = await _shopService.UpdateShopAsync(GetUserId(), dto);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 
+    /// <summary>Go Live — provide lat/long to make shop visible to customers</summary>
+    [HttpPost("go-live")]
+    [Authorize(Roles = "ShopOwner")]
+    public async Task<IActionResult> GoLive([FromBody] GoLiveDto dto)
+    {
+        try
+        {
+            var result = await _shopService.GoLiveAsync(GetUserId(), dto);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>Go Offline — hide shop from nearby search</summary>
+    [HttpPost("go-offline")]
+    [Authorize(Roles = "ShopOwner")]
+    public async Task<IActionResult> GoOffline()
+    {
+        try
+        {
+            await _shopService.GoOfflineAsync(GetUserId());
+            return Ok(new { message = "Shop is now offline." });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>Get my shop details</summary>
+    [HttpGet("my-shop")]
+    [Authorize(Roles = "ShopOwner")]
+    public async Task<IActionResult> GetMyShop()
+    {
+        try
+        {
+            var result = await _shopService.GetMyShopAsync(GetUserId());
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>Add a service to your shop</summary>
+    [HttpPost("services")]
+    [Authorize(Roles = "ShopOwner")]
+    public async Task<IActionResult> AddService([FromBody] CreateServiceDto dto)
+    {
+        try
+        {
+            var result = await _shopService.AddServiceAsync(GetUserId(), dto);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>Remove a service from your shop</summary>
+    [HttpDelete("services/{serviceId}")]
+    [Authorize(Roles = "ShopOwner")]
+    public async Task<IActionResult> DeleteService(int serviceId)
+    {
+        try
+        {
+            await _shopService.DeleteServiceAsync(GetUserId(), serviceId);
+            return Ok(new { message = "Service removed." });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    // ---- Customer Endpoints ----
+
+    /// <summary>Search nearby shops by lat/long and optional radius</summary>
+    [HttpPost("search-nearby")]
+    [Authorize(Roles = "Customer")]
+    public async Task<IActionResult> SearchNearby([FromBody] SearchShopDto dto)
+    {
+        var result = await _shopService.SearchNearbyShopsAsync(dto);
+        return Ok(result);
+    }
 }
