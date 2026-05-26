@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\models\\queueentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:models\\queueentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -21,10 +25,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\cutbookapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:cutbookapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{85752537-1217-42DA-B60B-B647ADDA97F6}|CutBookApi.csproj|d:\\meratool\\cutbookapi\\models\\shopservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -106,7 +106,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "CutBookApi.csproj",
               "DocumentMoniker": "D:\\meratool\\CutBookApi\\CutBookApi.csproj",
               "RelativeDocumentMoniker": "CutBookApi.csproj",
@@ -124,14 +124,14 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\meratool\\CutBookApi\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAFQAAAAAAAAAAAAAAHQAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAAAHwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-26T05:04:15.077Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "D:\\meratool\\CutBookApi\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
@@ -143,19 +143,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\meratool\\CutBookApi\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "D:\\meratool\\CutBookApi\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-26T05:01:24.389Z"
+              "WhenOpened": "2026-05-26T05:01:24.389Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "HaircutRequest.cs",
               "DocumentMoniker": "D:\\meratool\\CutBookApi\\Models\\HaircutRequest.cs",
               "RelativeDocumentMoniker": "Models\\HaircutRequest.cs",
@@ -179,7 +180,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "QueueEntry.cs",
               "DocumentMoniker": "D:\\meratool\\CutBookApi\\Models\\QueueEntry.cs",
               "RelativeDocumentMoniker": "Models\\QueueEntry.cs",
@@ -187,8 +188,7 @@
               "RelativeToolTip": "Models\\QueueEntry.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T17:03:33.946Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-17T17:03:33.946Z"
             },
             {
               "$type": "Document",
@@ -224,7 +224,8 @@
               "RelativeToolTip": "Services\\ShopService.cs",
               "ViewState": "AgIAAHIAAAAAAAAAAAAvwHgAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T16:48:05.55Z"
+              "WhenOpened": "2026-05-17T16:48:05.55Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",

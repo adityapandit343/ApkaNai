@@ -64,7 +64,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:3000",
-                "https://apkanai-4.onrender.com"
+                "https://apka-nai-ui.vercel.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
