@@ -53,6 +53,7 @@ public class ShopResponseDto
     public string OwnerName { get; set; } = string.Empty;
     public List<ServiceResponseDto> Services { get; set; } = new();
     public int ActiveQueueCount { get; set; }
+    public int EstimatedWaitMinutes { get; set; }
 }
 
 public class ServiceResponseDto

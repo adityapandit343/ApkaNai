@@ -118,28 +118,69 @@ public class ShopService : IShopService
     {
         var shops = await _db.Shops
             .Include(s => s.Services)
-            .Include(s => s.Owner)
             .Include(s => s.Queue)
-            .Where(s => s.IsLive && s.IsActive)
+                .ThenInclude(q => q.HaircutRequest)
+            .Where(s => s.IsActive)
             .ToListAsync();
 
-        var results = new List<(Shop shop, double dist)>();
+        var results = new List<(Shop shop, double dist, int estimatedMinutes)>();
 
         foreach (var shop in shops)
         {
-            var dist = GeoHelper.HaversineDistance(dto.Latitude, dto.Longitude, shop.Latitude, shop.Longitude);
-            if (dist <= dto.RadiusKm)
+            var dist = GeoHelper.HaversineDistance(
+                dto.Latitude,
+                dto.Longitude,
+                shop.Latitude,
+                shop.Longitude
+            );
+
+            if (dist > dto.RadiusKm)
+                continue;
+
+            if (!string.IsNullOrEmpty(dto.SalonType) &&
+                !shop.SalonType.Equals(dto.SalonType, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            int estimatedMinutes = 0;
+
+            foreach (var q in shop.Queue.Where(x => x.Status != "Done"))
             {
-                if (dto.SalonType != null && !shop.SalonType.Equals(dto.SalonType, StringComparison.OrdinalIgnoreCase))
-                    continue;
-                results.Add((shop, dist));
+                var req = q.HaircutRequest;
+                if (req == null) continue;
+
+                if (!string.IsNullOrEmpty(req.RequestedServices))
+                {
+                    var ids = req.RequestedServices
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => int.TryParse(x, out var id) ? id : 0)
+                        .Where(x => x > 0);
+
+                    estimatedMinutes += shop.Services
+                        .Where(s => ids.Contains(s.Id))
+                        .Sum(s => s.EstimatedMinutes);
+                }
+                else
+                {
+                    // fallback: assume full haircut service
+                    estimatedMinutes += shop.Services
+                        .Where(s => s.ServiceName == "Haircut")
+                        .Sum(s => s.EstimatedMinutes);
+                }
             }
+
+            results.Add((shop, dist, estimatedMinutes));
         }
 
-        var sorted = results.OrderBy(r => r.dist).ToList();
         var response = new List<ShopResponseDto>();
-        foreach (var (shop, dist) in sorted)
-            response.Add(await ToResponseDto(shop, dist, null));
+
+        foreach (var item in results.OrderBy(x => x.dist))
+        {
+            response.Add(await ToResponseDto(
+                item.shop,
+                item.dist,
+                item.estimatedMinutes
+            ));
+        }
 
         return response;
     }

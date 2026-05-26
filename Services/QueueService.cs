@@ -74,7 +74,7 @@ public class QueueService : IQueueService
             .FirstOrDefaultAsync(r => r.Id == requestId && r.ShopId == shop.Id && r.Status == "Pending")
             ?? throw new KeyNotFoundException("Request not found or already processed.");
 
-        // Generate token
+
         var lastToken = await _db.QueueEntries
             .Where(q => q.ShopId == shop.Id)
             .OrderByDescending(q => q.TokenNumber)
@@ -87,7 +87,7 @@ public class QueueService : IQueueService
         var token = lastToken + 1;
 
         request.Status = "Accepted";
-        request.AcceptedAt = DateTime.UtcNow;
+        request.AcceptedAt = DateTime.UtcNow.AddMinutes(330);
         request.TokenNumber = token;
 
         var queueEntry = new QueueEntry
@@ -97,7 +97,7 @@ public class QueueService : IQueueService
             CustomerId = request.CustomerId,
             Position = position,
             TokenNumber = token,
-            Status = position == 1 ? "InProgress" : "Waiting"
+            Status =  "Waiting"
         };
 
         if (position == 1) queueEntry.StartedAt = DateTime.UtcNow;
@@ -107,14 +107,15 @@ public class QueueService : IQueueService
 
         var responseDto = await BuildRequestResponseAsync(request);
 
-        // Notify customer in realtime
         await _hub.Clients.Group($"customer_{request.CustomerId}").SendAsync("RequestAccepted", responseDto);
 
-        // Broadcast updated queue to shop
+    
         await BroadcastQueueAsync(shop.Id);
 
         return responseDto;
     }
+
+
 
     public async Task<HaircutRequestResponseDto> RejectRequestAsync(int ownerId, int requestId)
     {
@@ -157,7 +158,7 @@ public class QueueService : IQueueService
         var shop = await _db.Shops.FirstOrDefaultAsync(s => s.OwnerId == ownerId)
             ?? throw new KeyNotFoundException("Shop not found.");
 
-        // Mark current InProgress as Done
+        
         var current = await _db.QueueEntries
             .Include(q => q.HaircutRequest)
             .FirstOrDefaultAsync(q => q.ShopId == shop.Id && q.Status == "InProgress");

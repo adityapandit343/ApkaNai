@@ -45,7 +45,7 @@ public class AuthController : ControllerBase
         }
     }
 
-    /// <summary>Login for both customers and shop owners</summary>
+  
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
